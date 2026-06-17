@@ -7,9 +7,9 @@
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	
-	<name>maven-web-application</name>
+	<name>flipkart-web-application</name>
 
-	<description>Maven Web Project for Java Project</description>
+	<description>flipkart Web Project for Java Project</description>
 
 	<organization>
 		<name>Mithun Technologies</name>
@@ -21,7 +21,7 @@
 		<spring.version>5.1.2.RELEASE</spring.version>
 		<junit.version>4.11</junit.version>
 		<log4j.version>1.2.17</log4j.version>
-		<sonar.host.url>http://65.0.177.111:9000/</sonar.host.url>
+		<sonar.host.url>http://3.110.27.33:9000/</sonar.host.url>
 		<sonar.login>admin</sonar.login>
 		<sonar.token>sqa_8b751817c0f91760c4d2876f5bd3f968808b5b76</sonar.token> 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
