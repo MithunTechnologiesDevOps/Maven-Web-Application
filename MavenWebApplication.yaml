@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: webpage-container
-        image: 149536451818.dkr.ecr.ap-south-1.amazonaws.com/maven-web-application:Build_Tag
+        image: 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:Build_Tag
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

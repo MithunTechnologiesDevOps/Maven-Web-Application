@@ -46,5 +46,30 @@ pipeline
                 sh "docker push 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${build_Number}"
             }
         }
+
+        stage('Remove Docker Image Locally')
+        {
+            steps()
+            {
+                sh 'docker rmi -f 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${build_Number}'
+            }
+        }
+
+        stage('Update Image Tag in Kubernetes Manifest File')
+        {
+            steps()
+            {
+                sh "sed -i 's/Build_Tag/${ubuild_Nmber}g MavenWebApplication.yaml"
+            }
+        }
+
+        stage('Deploy Application in AWS EKS Cluster')
+        {
+            steps()
+            {
+                sh 'kubectl delete deployment webpage-deployment -n production || true'
+                sh 'kubectl apply -f MavenWebApplication.yaml'
+            }
+        }
     }
 }
