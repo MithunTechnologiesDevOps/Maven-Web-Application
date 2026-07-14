@@ -51,7 +51,7 @@ pipeline
         {
             steps()
             {
-                sh 'docker rmi -f 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${build_Number}'
+                sh "docker rmi -f 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${build_Number}"
             }
         }
 
