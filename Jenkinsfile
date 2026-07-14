@@ -37,5 +37,14 @@ pipeline
                 sh "docker build -t 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${build_Number} ."
             }
         }
+
+        stage('Authenticate and Push Docker Image to AWS ECR')
+        {
+            steps()
+            {
+                sh 'aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 210447604094.dkr.ecr.ap-south-1.amazonaws.com'
+                sh "docker push 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${build_Number}"
+            }
+        }
     }
 }
