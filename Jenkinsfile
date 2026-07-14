@@ -34,7 +34,7 @@ pipeline
         {
             steps()
             {
-                sh 'docker build -t 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${build_Number} .'
+                sh "docker build -t 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${build_Number} ."
             }
         }
     }
