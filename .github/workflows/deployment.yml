@@ -32,6 +32,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
+      - name: Authenticate With ecr
+        users: aws-actions/amazon-ecr-login@v2
+
       - name: Push Docker Image
         run: |
           docker push 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${{ github.run_number }} 
