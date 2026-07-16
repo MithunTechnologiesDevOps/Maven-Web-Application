@@ -4,18 +4,18 @@ pipeline
 
     tools
     {
-      maven 'Maven_3.8.2'
+        maven 'Maven_3.8.2'
     }
 
     triggers
     {
-      pollSCM('* * * * *')
+        pollSCM('* * * * *')
     }
 
     options
     {
-      timestamps()
-      buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5'))
+        timestamps()
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5'))
     }
 
     stages
