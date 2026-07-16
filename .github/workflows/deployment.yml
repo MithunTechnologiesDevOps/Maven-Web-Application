@@ -21,3 +21,13 @@ jobs:
 
       - name: Build Maven Project
         run: mvn clean package
+
+      - name: Build Docker Image
+        run: docker build -t 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${{github.run_number}} .
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-south-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-access-key-id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
