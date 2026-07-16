@@ -38,3 +38,16 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${{ github.run_number }} 
+      
+      - name: Update Docker Image Tag in Kubernetes Manifest File
+        run: |
+          sed -i "s/Build_Tag/${{ github.run_number }}/g" MavenWebApplication.yaml
+      
+      - name: Configure Kubect for EKS
+        run: |
+          aws eks update-kubeconfig --region ap-south-1 --name Amazon_Production_EKS_Cluster
+
+      - name: Deploy Application to EKS
+        run: |
+          kubectl delete deployment webpage-deployment -n production || true
+          kubectl apply -f MavenWebApplication.yaml
