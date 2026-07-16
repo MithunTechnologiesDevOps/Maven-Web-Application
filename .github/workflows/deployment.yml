@@ -3,24 +3,21 @@ name: CICD Pipeline
 on:
   push:
     branches:
-    - main
+      - main
 
 jobs:
-  
   build:
+    runs-on: ubuntu-latest
 
-  runs-on: ubuntu-latest
-  
-  steps:
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
 
-  - name: Git Checkout
-    users: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-  - name: Setup Java
-  - uses: actions/setup-java@v4
-    with:
-      java-version: '17'
-      distribution: 'temurin'
-
-  - name: Build Maven Project
-    run: mvn clean package
+      - name: Build Maven Project
+        run: mvn clean package
