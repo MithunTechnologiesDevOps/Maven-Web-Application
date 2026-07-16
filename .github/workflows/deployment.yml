@@ -23,7 +23,7 @@ jobs:
         run: mvn clean package
 
       - name: Build Docker Image
-        run: docker build -t 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${{ github.run_number }} .
+        run: docker build -t 210447604094.dkr.ecr.ap-south-1.amazonaws.com/maven-web-application:${{ github.run_number }} .
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -36,7 +36,7 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          docker push 210447604094.dkr.ecr.ap-south-1.amazonaws.com/login-service:${{ github.run_number }} 
+          docker push 210447604094.dkr.ecr.ap-south-1.amazonaws.com/maven-web-application:${{ github.run_number }} 
       
       - name: Update Docker Image Tag in Kubernetes Manifest File
         run: |
