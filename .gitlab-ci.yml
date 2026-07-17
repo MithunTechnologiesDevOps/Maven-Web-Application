@@ -1,0 +1,91 @@
+
+
+
+
+stages:
+  - sonar_scan
+  - build
+  - docker_build
+  - docker_push
+  - security_scan
+  - deploy
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  DOCKER_DRIVER: overlay2
+  IMAGE_NAME: ck9999p/dev
+  IMAGE_TAG: latest
+
+# Cache Maven dependencies
+cache:
+  paths:
+    - .m2/repository
+
+# SonarQube scan
+sonar_scan:
+  stage: sonar_scan
+  image: maven:3.8.5-jdk-11
+  script:
+    - mvn clean verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io/projects/create?organization=ck9999p -Dsonar.login=14c6fc72f0abccb7d94857b266e84af613710c19
+  only:
+    - main
+
+# Maven build
+build:
+  stage: build
+  image: maven:3.8.5-jdk-11
+  script:
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - target/*.jar
+
+# Build Docker Image
+docker_build:
+  stage: docker_build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  script:
+    - docker login -u "ck9999p" -p "Pandu@5679"
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+  only:
+    - main
+
+# Push Docker Image
+docker_push:
+  stage: docker_push
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  script:
+    - docker login -u "ck9999p" -p "Pandu@5679"
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+  only:
+    - main
+
+# Scan Docker image with Trivy
+trivy_scan:
+  stage: security_scan
+  image: aquasec/trivy:0.32.0
+  dependencies:
+    - docker_build
+  script:
+    - trivy image --exit-code 1 --severity HIGH,CRITICAL $IMAGE_NAME:$IMAGE_TAG
+  allow_failure: false
+
+# Run Container (optional, for deployment/testing)
+deploy:
+  stage: deploy
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  script:
+    - docker run -d --name my-container -p 8080:8080 $IMAGE_NAME:$IMAGE_TAG
+  only:
+    - main  
+
+
+
+
+
