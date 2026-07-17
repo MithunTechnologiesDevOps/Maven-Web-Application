@@ -1,0 +1,44 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  imageName: myapp
+  tag: $(Build.BuildId)
+
+steps:
+# 1. Print a hello message
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+# 2. Placeholder for build commands (adjust based on language)
+- script: |
+    echo "Building your project..."
+    # Uncomment and modify the following depending on your tech stack
+    # npm install
+    # npm run build
+    # dotnet build
+  displayName: 'Build the app'
+
+# 3. Build the Docker image
+- task: Docker@2
+  displayName: 'Build Docker image'
+  inputs:
+    command: build
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      $(tag)
+    repository: $(imageName)
+
+# 4. Push Docker image to Docker Hub or ACR
+- task: Docker@2
+  displayName: 'Push Docker image'
+  inputs:
+    command: push
+    repository: $(imageName)
+    tags: |
+      $(tag)
+    containerRegistry: 'myContainerRegistryServiceConnection'  # Replace with your DockerHub or ACR connection name
+
