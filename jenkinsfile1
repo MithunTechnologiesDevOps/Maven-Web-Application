@@ -1,0 +1,35 @@
+node
+{
+    mavenHome = tool name: 'Maven 3.9.12'
+    stage('debug-settings') {
+  sh "${mavenHome}/bin/mvn help:effective-settings"
+}
+    stage ('checkoutcodegit')
+    {
+        git branch: 'development', credentialsId: 'e19dbdde-5445-4170-9c4e-2f518493875a', url: 'https://github.com/nishanthsannagiri1518-gif/maven-web-application.git'
+    }
+    stage ('build')
+    {
+        sh "${mavenHome}/bin/mvn clean package"
+    }
+    stage ('sonarqubeanalysis')
+    {
+        withSonarQubeEnv('sonarqube') {
+            sh "${mavenHome}/bin/mvn sonar:sonar"
+        }
+    }
+    stage ('nexusrepositoryupload')
+    {
+        withCredentials([usernamePassword(credentialsId: 'nexus-cred', passwordVariable: 'NEXUS_PASSWD', usernameVariable: 'NEXUS_USER')]) {
+            sh "${mavenHome}/bin/mvn deploy "
+        }
+    }
+    stage ('deploywebapp')
+    {
+        sshagent(['379f77d7-e86d-47d1-8b11-5d5ae2bf7e1d']) {
+            sh 'scp -o StrictHostKeyChecking=no target/maven-web-application.war  ec2-user@54.221.87.9:/opt/tomcat/webapps/'
+    }
+    }
+
+}
+
