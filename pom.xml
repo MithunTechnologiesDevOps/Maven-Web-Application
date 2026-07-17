@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20160212</version>
+			<version>20231013</version>
 		</dependency>
 		
 		<!-- test dependencies -->
@@ -64,22 +64,22 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
+			<version>5.1.2.RELEASE</version>
 		</dependency>
 		<dependency>
     		<groupId>org.springframework</groupId>
     		<artifactId>spring-web</artifactId>
-    		<version>${spring.version}</version>
+    		<version>5.3.38</version>
   		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
+			<version>6.1.21</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
+			<version>5.3.39</version>
 		</dependency>
 		
 		<!-- provided dependencies -->
