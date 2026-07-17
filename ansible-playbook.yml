@@ -1,0 +1,97 @@
+---
+- name: Play 1 - Run Roles for misl softwares,Apache & Tomcat
+  hosts: web
+  become: yes
+  vars:
+    v_role_path: "{{ WORKSPACE }}/roles"
+  roles:
+    - "{{ v_role_path }}/misl"
+    - "{{ v_role_path }}/apache"
+    - "{{ v_role_path }}/tomcat"
+
+- name: Play 2 - Custom configuration of Apache
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: delete the doc root dir
+      file:
+        path: /var/www/html
+        state: absent
+
+    - name: "code copy"
+      git:
+        repo: 'https://github.com/mailrahulsre/learnwithprojects.com.git'
+        dest: /var/www/html
+        version: master
+        force: yes
+
+    - name: copy the proxypass file
+      copy:
+        src: "{{ WORKSPACE }}/proxypass.conf"
+        dest: /etc/httpd/conf.d/proxypass.conf
+        owner: root
+        group: root
+      notify:
+        - reload apache
+
+    - name: Set httpd_can_network_connect flag on and keep it persistent across reboots
+      seboolean:
+        name: httpd_can_network_connect
+        state: yes
+        persistent: yes
+      tags: selinux
+
+  handlers:
+    - name: reload apache
+      service: name=httpd state=reloaded
+
+- name: Play 3 - Python Install
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Install Python 3.6
+      yum:
+        name: python36
+        state: present
+      tags: python-install
+
+    - name: alternatives
+      alternatives:
+        name: python
+        link: /usr/bin/python3.6
+        path: /usr/bin/python3
+      tags: python-alternatives
+
+- name: Play 4 - Python library install and copying of War file
+  hosts: webservers
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+  tasks:
+    - name: Install boto3 and botocore with pip3 module
+      pip:
+        name:
+          - boto
+          - boto3
+          - botocore
+        executable: pip3.6
+      tags: boto-lib-install
+
+    - name: copy the war file
+      aws_s3:
+        bucket: lwplabs
+        object: login##1.0.war
+        dest: /etc/tomcat/webapps/login##1.0.war
+        mode: get
+      tags: copy-war
+
+- name: Play 5 - Start Tomcat Servers
+  hosts: webservers
+  become: yes
+  become_user: root
+  tasks:
+          #- name: shut tomcat
+          #command: nohup sh /etc/tomcat/bin/shutdown.sh
+    - name: start tomcat
+      command: nohup sh /etc/tomcat/bin/startup.sh
+      tags: start-tomcat
